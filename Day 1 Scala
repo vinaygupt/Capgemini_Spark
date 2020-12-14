@@ -1,0 +1,172 @@
+// Databricks notebook source
+//var a:Int=1
+lazy val a=10
+
+// COMMAND ----------
+
+lazy val variable_lazy={print("Hello World");500}
+
+// COMMAND ----------
+
+variable_lazy
+
+// COMMAND ----------
+
+lazy val sum=10+b
+val b=9
+println(sum)
+
+// COMMAND ----------
+
+val `val`=10
+println(`val`)
+
+// COMMAND ----------
+
+def square(a:Int): Int={
+  a*a
+}
+square(3)
+
+// COMMAND ----------
+
+def add(a:Int,b:Int)=a+b
+println(add(6,8))
+
+// COMMAND ----------
+
+val `void`=100
+val`false`=true
+val `return`=90
+
+if(`false`) `void` else `return`
+
+// COMMAND ----------
+
+def square(a:Int):Int ={
+  a*a
+}
+
+def sq2(y:Int, takeFunction: Int =>Int): Int ={
+   takeFunction(y)
+}
+sq2(4,square)
+
+// COMMAND ----------
+
+val a="\t\r\u03BB"
+
+// COMMAND ----------
+
+val ls=List(1,2,3,4,5)
+ls
+
+// COMMAND ----------
+
+ls(4)
+
+// COMMAND ----------
+
+ls.reverse
+
+// COMMAND ----------
+
+ls.tail
+
+// COMMAND ----------
+
+ls.head
+
+// COMMAND ----------
+
+var arr=Array(1,3,5,7,9)
+arr
+
+// COMMAND ----------
+
+arr(0)=100
+arr
+
+// COMMAND ----------
+
+// DBTITLE 1,First RDD- SC (Spark Context -> Object databricks which is used to work with cluster)
+// first rdd
+//using Parallelize method
+
+val data= List(1,2,3,4)
+
+//parallelize method is used to create the RDD and are lazy in nature
+// lazy means it is not executed untill it is invoked
+val createRDD = sc.parallelize(data)
+
+// COMMAND ----------
+
+// to get result of RDD -> action on RDD
+
+createRDD.collect()
+
+// COMMAND ----------
+
+// to know the partitions
+
+createRDD.partitions.size
+
+// COMMAND ----------
+
+// keep own partitions
+
+val userPartition=sc.parallelize(List(2,4,6,7,8,9,10,11,12),3)
+
+// COMMAND ----------
+
+userPartition.partitions.size
+
+// COMMAND ----------
+
+// count is also RDD action- It returns the number of elements
+
+userPartition.count()
+
+// COMMAND ----------
+
+// map -> transformation
+
+userPartition.map( x=> x*x).collect().take(2)
+
+// COMMAND ----------
+
+userPartition.filter(x=>x%2==0).collect()
+
+
+// COMMAND ----------
+
+// this will return true false for condition
+userPartition.map(x=>x%2==0).collect()
+
+// COMMAND ----------
+
+val name=sc.parallelize(List("Vinay","Kumar","Gupta","Bagaha"))
+name.collect()
+
+// COMMAND ----------
+
+// Map vs flatMap
+
+name.map(x=>x.split("->")).collect()
+
+// COMMAND ----------
+
+name.flatMap(x=>x.split("->")).collect()
+
+// COMMAND ----------
+
+val rddnew=sc.parallelize(Array("One","Two","Three","Four","Two","One","Two"))
+
+// COMMAND ----------
+
+val keyrdd=rddnew.map(x=>(x,5))
+keyrdd.collect()
+
+// COMMAND ----------
+
+keyrdd.reduceByKey(_+_).collect()
