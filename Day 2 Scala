@@ -1,0 +1,60 @@
+// Databricks notebook source
+//- /FileStore/tables/ratings.csv
+
+val data=sc.textFile("/FileStore/tables/ratings.csv")
+
+// COMMAND ----------
+
+data.collect()
+
+// COMMAND ----------
+
+// collecting third column only
+val ratingsData=data.map(x=>x.split(",")(2))
+
+ratingsData.collect()
+
+// COMMAND ----------
+
+ratingsData.count()
+
+// COMMAND ----------
+
+ratingsData.countByValue
+
+// COMMAND ----------
+
+//- /FileStore/tables/airports.text
+val airdata=sc.textFile("/FileStore/tables/airports.text")
+airdata.collect()
+
+// COMMAND ----------
+
+val state=airdata.filter(x=>x.split(",")(3)=="\"United States\"")
+state.take(3)
+
+// COMMAND ----------
+
+// DBTITLE 1,First Approach
+def splitInput(line:String)={
+  val datasplit=line.split(",")
+  val airportID=datasplit(1)
+  val cityName=datasplit(2)
+  (airportID,cityName)
+}
+
+// COMMAND ----------
+
+state.map(splitInput).take(3)
+
+// COMMAND ----------
+
+// DBTITLE 1,Second Approach
+state.map(line=>{
+  val splitdata=line.split(",")
+  splitdata(1)+" "+splitdata(2)
+}).take(4)
+
+// COMMAND ----------
+
+
