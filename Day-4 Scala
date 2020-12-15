@@ -1,0 +1,62 @@
+// Databricks notebook source
+code link- https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/2559869894274865/3569389527991426/4948515582477507/latest.html
+
+// COMMAND ----------
+
+val data1=sc.parallelize(List(("Vinay",2020),("Gupta",1998)))
+
+val data2=sc.parallelize(List(("Kumar",98),("Gupta","Bagaha")))
+
+// COMMAND ----------
+
+data1.join(data2).collect()
+
+// COMMAND ----------
+
+data1.leftOuterJoin(data2).collect()
+
+// COMMAND ----------
+
+data1.rightOuterJoin(data2).collect()
+
+// COMMAND ----------
+
+
+
+// Databricks notebook source
+// files name- /FileStore/tables/StackOverflow_survey_responses.csv
+
+// COMMAND ----------
+
+code Link(Published)
+https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/2559869894274865/3569389527991432/4948515582477507/latest.html
+
+// COMMAND ----------
+
+val acc=sc.textFile("/FileStore/tables/StackOverflow_survey_responses.csv")
+
+// COMMAND ----------
+
+// DBTITLE 1,Accumulator variable
+val total_rows=sc.longAccumulator
+
+val midMissingSalary=sc.longAccumulator
+
+// COMMAND ----------
+
+val afghanRDD=acc.filter(responseData =>{
+  val splitData=responseData.split(",",-1)
+  total_rows.add(1)
+  if(splitData(14).isEmpty){
+    midMissingSalary.add(1)
+  }
+  splitData(2)=="Afghanistan"
+})
+
+// COMMAND ----------
+
+print(total_rows.value)
+
+// COMMAND ----------
+
+afghanRDD.take(5)
