@@ -1,0 +1,142 @@
+// Databricks notebook source
+https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/2559869894274865/520823699921006/4948515582477507/latest.html
+
+// COMMAND ----------
+
+// data
+
+val data=List("Vinay","Kumar","Gupta","Bagaha","Bihar","Gupta","Vinay")
+
+// COMMAND ----------
+
+val datardd=sc.parallelize(data)
+
+// COMMAND ----------
+
+datardd.countByValue
+
+// COMMAND ----------
+
+val data2=List(1,2,3,4,5)
+
+val data2rdd=sc.parallelize(data2)
+
+// COMMAND ----------
+
+val productRDD= data2rdd.reduce((x,y)=>x*y)
+
+productRDD
+
+// COMMAND ----------
+
+// DBTITLE 1,Sum of Prime
+// Creating RDD from file
+val prime=sc.textFile("/FileStore/tables/numberData.csv")
+
+prime.collect()
+
+// COMMAND ----------
+
+def isPrime(n: Int) = Range(2, n-1).filter(i => n % i == 0).length == 0 
+
+
+// COMMAND ----------
+
+//import scala.collection.mutable.ArrayBuffer
+val arr=ArrayBuffer[Int]()
+for( i <- 0 to prime.count.toInt) 
+  { 
+          if(i!=0 && i!=1 && isPrime(i)){
+           
+            arr+=i
+          }
+   }
+var i=0
+var sum1=0
+while (i < arr.length) {
+  sum1 += arr(i)
+  i += 1
+}
+println("Sum of prime numbers: "+sum1);
+
+// Databricks notebook source
+//= /FileStore/tables/Property_data.csv
+
+code-   https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/2559869894274865/4217735835160876/4948515582477507/latest.html
+
+// COMMAND ----------
+
+val data=sc.textFile("/FileStore/tables/Property_data.csv")
+
+// COMMAND ----------
+
+val removeHeader=data.filter(line=> !line.contains("Price"))
+removeHeader.take(10)
+
+// COMMAND ----------
+
+val roomrdd=removeHeader.map(x=>(x.split(",")(3).toInt,(1,x.split(",")(2).toDouble)))
+roomrdd.take(15)
+
+// COMMAND ----------
+
+val reducedRdd=roomrdd.reduceByKey((x,y)=>(x._1+y._1,x._2+y._2))
+reducedRdd.take(10)
+
+// COMMAND ----------
+
+val finalRdd=reducedRdd.mapValues(data=>data._2/data._1)
+finalRdd.take(15)
+
+// COMMAND ----------
+
+for((bedroom,avg)<-finalRdd.collect()) println(bedroom+" : "+avg)
+
+// COMMAND ----------
+
+finalRdd.saveAsTextFile("Property_Final.csv")
+
+// Databricks notebook source
+// - /FileStore/tables/airports.text
+
+//code link-  https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/2559869894274865/2059903037894585/4948515582477507/latest.html
+
+// COMMAND ----------
+
+val data =sc.textFile("/FileStore/tables/airports.text")
+
+// COMMAND ----------
+
+// DBTITLE 1,Airport not in Canada
+val datardd=data.map(line=>(line.split(",")(0),line.split(",")(1) ))
+datardd.take(3)
+
+// COMMAND ----------
+
+datardd.filter(x=>x._2!="\"Canada\"").take(5)
+
+// COMMAND ----------
+
+data.map(x=>x.split(",")(11).toLowerCase).collect()
+
+// COMMAND ----------
+
+val listData=List("Vinay 1998","Gupta 16","Kumar 01","Sam 1996")
+
+// COMMAND ----------
+
+val newRDD=sc.parallelize(listData)
+newRDD.collect()
+
+// COMMAND ----------
+
+val RDDnew= newRDD.map(x=>(x.split(" ")(0),x.split(" ")(1).toInt ))
+RDDnew.take(4)
+
+// COMMAND ----------
+
+RDDnew.mapValues(x=>x+1000).collect()
+
+// COMMAND ----------
+
+
